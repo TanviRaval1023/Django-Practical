@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sentiment Analyzer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f5f9;
+            color: #263238;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 700px;
+            padding: 36px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #2457a7;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #667085;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 14px;
+            border: 1px solid #d5dbe5;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #3867d6;
+            box-shadow: 0 0 0 3px rgba(56, 103, 214, 0.12);
+        }
+
+        .character-count {
+            text-align: right;
+            color: #667085;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #2457a7;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #194787;
+        }
+
+        .result {
+            margin-top: 26px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f0f7f2;
+            border: 1px solid #d4e9da;
+        }
+
+        .result h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .sentiment {
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .positive {
+            color: #218653;
+        }
+
+        .negative {
+            color: #c0392b;
+        }
+
+        .confidence {
+            color: #475467;
+            margin-top: 8px;
+        }
+
+        .error {
+            background: #fff0f0;
+            border: 1px solid #f0caca;
+            color: #a12626;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 26px;
+            text-align: center;
+            font-size: 12px;
+            color: #98a2b3;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <span class="badge">AI / ML · TEXT CLASSIFICATION</span>
+
+        <h1>Sentiment Analyzer</h1>
+
+        <p class="description">
+            Enter a sentence, product review, or customer comment.
+            Our AI model will analyze the text and predict whether
+            the sentiment is positive or negative.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="text">Enter your text</label>
+
+            <textarea
+                id="text"
+                name="text"
+                maxlength="2000"
+                placeholder="Example: The service was excellent and the food was delicious!"
+                required
+            >{{ text }}</textarea>
+
+            <div class="character-count">
+                Maximum 2000 characters
+            </div>
+
+            <button type="submit">Analyze Sentiment</button>
+        </form>
+
+        {% if sentiment %}
+    <section class="result" aria-live="polite">
+        <h2>Analysis Result</h2>
+
+        <p>
+            <strong>Submitted text:</strong>
+            {{ text }}
+        </p>
+
+        <p class="sentiment {% if sentiment == 'POSITIVE' %}positive{% elif sentiment == 'NEGATIVE' %}negative{% endif %}">
+            {{ sentiment }}
+        </p>
+
+        <p class="confidence">
+            <strong>Explanation:</strong>
+            {{ explanation }}
+        </p>
+    </section>
+{% endif %}
+
+        {% if error %}
+            <div class="error" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="footer">
+            Developed using Django and the Hugging Face Inference API
+        </div>
+    </main>
+</body>
+</html>

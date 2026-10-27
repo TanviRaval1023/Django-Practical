@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if book %}Edit Book{% else %}Add Book{% endif %}
+        | Bookstore
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 35px 20px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #263238;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 32px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #243b53;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .error {
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #991b1b;
+            background: #fee2e2;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .cancel:hover {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>
+            {% if book %}Edit Book{% else %}Add New Book{% endif %}
+        </h1>
+
+        <p class="subtitle">
+            {% if book %}
+                Update the details of the selected book.
+            {% else %}
+                Enter the details to add a book to your collection.
+            {% endif %}
+        </p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="title">Book Title</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    maxlength="200"
+                    value="{% if form_data %}{{ form_data.title }}{% elif book %}{{ book.title }}{% endif %}"
+                    placeholder="Enter book title"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input
+                    type="text"
+                    id="author"
+                    name="author"
+                    maxlength="100"
+                    value="{% if form_data %}{{ form_data.author }}{% elif book %}{{ book.author }}{% endif %}"
+                    placeholder="Enter author's name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (₹)</label>
+                <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    min="0"
+                    max="999999.99"
+                    step="0.01"
+                    value="{% if form_data %}{{ form_data.price }}{% elif book %}{{ book.price }}{% endif %}"
+                    placeholder="Enter book price"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Genre</label>
+                <input
+                    type="text"
+                    id="genre"
+                    name="genre"
+                    maxlength="100"
+                    value="{% if form_data %}{{ form_data.genre }}{% elif book %}{{ book.genre }}{% endif %}"
+                    placeholder="e.g. Fiction, Science, Self-Help"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="published_year">Published Year</label>
+                <input
+                    type="number"
+                    id="published_year"
+                    name="published_year"
+                    min="0"
+                    max="999999999"
+                    step="1"
+                    value="{% if form_data %}{{ form_data.published_year }}{% elif book %}{{ book.published_year }}{% endif %}"
+                    placeholder="Enter publication year"
+                    required
+                >
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="button">
+                    {% if book %}Update Book{% else %}Save Book{% endif %}
+                </button>
+
+                <a href="{% url 'book_list' %}" class="button cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+    </div>
+</body>
+</html>
